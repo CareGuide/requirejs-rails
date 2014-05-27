@@ -12,9 +12,9 @@ module RequirejsHelper
       if name
         name += ".js" unless name =~ /\.js$/
         data['main'] = _javascript_path(name).
-                        sub(/\.js$/,'').
-                        sub(base_url(name), '').
-                        sub(/\A\//, '')
+                        # sub(/\.js$/,''). # don't remove suffix .js
+                        sub(base_url(name), '') # .
+                        # sub(/\A\/?/, '') # don't remove prefix "/"
       end
 
       data.merge!(yield controller) if block_given?
@@ -97,7 +97,15 @@ module RequirejsHelper
 
   def base_url(js_asset)
     js_asset_path = javascript_path(js_asset)
-    uri = URI.parse(js_asset_path)
+
+    # Match // CDN hosts, and prefix given request SSL layer
+    if js_asset_path.match(/\A\/\//)
+      prefixed_js_asset_path = 'http'
+      prefixed_js_asset_path += (request.ssl? ? 's:' : ':')
+      js_asset_path = prefixed_js_asset_path += js_asset_path
+    end
+
+    uri = URI.parse(js_asset_path) # throws URI Parse exception if path begins with "//"
     asset_host = uri.host && js_asset_path.sub(uri.request_uri, '')
     [asset_host, Rails.application.config.relative_url_root, Rails.application.config.assets.prefix].join
   end
