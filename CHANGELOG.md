@@ -1,6 +1,14 @@
 <!--
 Marked Style: GitHub
 -->
+# v0.9.3.2
+
+- Correct trim of prefix "/application.js"
+
+# v0.9.3.1
+
+- Allow for CDNs and asset hosts prefixed with "//"
+
 # v0.9.3
 
 - Update `require.js` to `2.1.11` and `almond.js` to `0.2.9`.

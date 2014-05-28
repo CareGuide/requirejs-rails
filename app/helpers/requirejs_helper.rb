@@ -13,8 +13,8 @@ module RequirejsHelper
         name += ".js" unless name =~ /\.js$/
         data['main'] = _javascript_path(name).
                         # sub(/\.js$/,''). # don't remove suffix .js
-                        sub(base_url(name), '') # .
-                        # sub(/\A\/?/, '') # don't remove prefix "/"
+                        sub(base_url(name), '').
+                        sub(/\A\/(\w+)/, '\1') # don't remove prefix "//"
       end
 
       data.merge!(yield controller) if block_given?
